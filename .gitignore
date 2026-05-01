@@ -35,8 +35,12 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+coverage/
 
 # generated native folders
 /ios
 /android
 .env
+.agents/skills/ios-designer/SKILL.md
+.agents/skills/ios-designer/references/liquid-glass-reference.md
+.agents/skills/ios-designer/references/design-philosophy.md
