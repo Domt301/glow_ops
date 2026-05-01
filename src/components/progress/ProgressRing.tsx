@@ -15,12 +15,12 @@ export function ProgressRing({
   value,
   size,
   label,
-  color = 'electricBlue',
-  thickness = 8,
+  color = 'accent',
+  thickness = 6,
 }: ProgressRingProps) {
   const clamped = Math.max(0, Math.min(100, value));
-  const radius = (size - thickness) / 2;
-  const circumference = 2 * Math.PI * radius;
+  const r = (size - thickness) / 2;
+  const circumference = 2 * Math.PI * r;
   const offset = circumference - (clamped / 100) * circumference;
 
   return (
@@ -29,7 +29,7 @@ export function ProgressRing({
         <Circle
           cx={size / 2}
           cy={size / 2}
-          r={radius}
+          r={r}
           stroke={colors.slate}
           strokeWidth={thickness}
           fill="none"
@@ -37,7 +37,7 @@ export function ProgressRing({
         <Circle
           cx={size / 2}
           cy={size / 2}
-          r={radius}
+          r={r}
           stroke={colors[color]}
           strokeWidth={thickness}
           fill="none"
@@ -49,10 +49,10 @@ export function ProgressRing({
       </Svg>
       <View style={{ position: 'absolute', alignItems: 'center' }}>
         <Text variant="stat" color="platinum">
-          {Math.round(clamped)}%
+          {Math.round(clamped)}
         </Text>
         {label ? (
-          <Text variant="caption" color="steel">
+          <Text variant="caption" color="steelDim">
             {label}
           </Text>
         ) : null}

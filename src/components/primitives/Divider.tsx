@@ -1,17 +1,25 @@
 import { View } from 'react-native';
-import { colors } from '@/theme';
+import { colors, spacing, type SpacingToken } from '@/theme';
 
 export type DividerProps = {
   vertical?: boolean;
+  strong?: boolean;
+  inset?: SpacingToken;
 };
 
-export function Divider({ vertical = false }: DividerProps) {
+export function Divider({ vertical = false, strong = false, inset = 'none' }: DividerProps) {
+  const color = strong ? colors.hairlineStrong : colors.hairline;
+  const insetPx = spacing[inset];
+  if (vertical) {
+    return <View style={{ backgroundColor: color, width: 1, alignSelf: 'stretch' }} />;
+  }
   return (
     <View
       style={{
-        backgroundColor: colors.border,
-        width: vertical ? 1 : '100%',
-        height: vertical ? '100%' : 1,
+        backgroundColor: color,
+        height: 1,
+        alignSelf: 'stretch',
+        marginHorizontal: insetPx,
       }}
     />
   );

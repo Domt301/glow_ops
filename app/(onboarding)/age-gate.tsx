@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { Screen } from '@/components/primitives/Screen';
 import { Stack } from '@/components/primitives/Stack';
 import { Text } from '@/components/primitives/Text';
+import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
 import { useUpdateUser } from '@/hooks/mutations/useUpdateUser';
 import { useUiStore } from '@/stores/ui.store';
@@ -32,18 +33,25 @@ export default function AgeGateScreen() {
 
   return (
     <Screen>
-      <Stack gap="xl" justify="center" flex={1}>
-        <Text variant="h1" color="platinum">
-          Are you 18 or older?
-        </Text>
-        <Stack gap="md">
+      <Stack gap="xl" justify="between" flex={1}>
+        <Stack gap="md" justify="center" flex={1}>
+          <Eyebrow>Step 01 / 04</Eyebrow>
+          <Text variant="display" color="platinum">
+            Are you 18 or older?
+          </Text>
+          <Text variant="bodyLarge" color="steel">
+            Glowops is designed for adults. We&apos;ll ask once.
+          </Text>
+        </Stack>
+        <Stack gap="sm">
           <Button
             label="Yes, I'm 18+"
             onPress={handleYes}
             loading={updateUser.isPending}
             fullWidth
+            size="lg"
           />
-          <Button label="No" variant="ghost" onPress={handleNo} fullWidth />
+          <Button label="No" variant="ghost" onPress={handleNo} fullWidth size="lg" />
         </Stack>
       </Stack>
     </Screen>

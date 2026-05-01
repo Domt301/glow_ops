@@ -38,12 +38,12 @@ function Toast() {
   }, [toast, hide]);
 
   if (!toast) return null;
-  const tint =
+  const accentLine =
     toast.tone === 'success'
       ? colors.signalGreen
       : toast.tone === 'error'
         ? colors.crimson
-        : colors.electricBlue;
+        : colors.accent;
 
   return (
     <View
@@ -53,11 +53,14 @@ function Toast() {
         bottom: 48,
         left: 16,
         right: 16,
-        backgroundColor: colors.gunmetal,
-        borderColor: tint,
+        backgroundColor: colors.graphite,
+        borderColor: colors.hairlineStrong,
         borderWidth: 1,
+        borderLeftWidth: 3,
+        borderLeftColor: accentLine,
         borderRadius: 12,
-        padding: 14,
+        paddingVertical: 14,
+        paddingHorizontal: 16,
       }}
     >
       <Text variant="body" color="platinum">

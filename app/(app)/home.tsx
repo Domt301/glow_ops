@@ -1,10 +1,13 @@
+import { useMemo } from 'react';
 import { useRouter } from 'expo-router';
 import { Screen } from '@/components/primitives/Screen';
 import { Stack } from '@/components/primitives/Stack';
 import { Row } from '@/components/primitives/Row';
 import { Text } from '@/components/primitives/Text';
+import { Eyebrow } from '@/components/primitives/Eyebrow';
+import { Stat } from '@/components/primitives/Stat';
 import { Card } from '@/components/primitives/Card';
-import { LoadingState } from '@/components/primitives/LoadingState';
+import { Divider } from '@/components/primitives/Divider';
 import { ErrorState } from '@/components/primitives/ErrorState';
 import { EmptyState } from '@/components/primitives/EmptyState';
 import { Skeleton } from '@/components/primitives/Skeleton';
@@ -12,50 +15,60 @@ import { StreakBar } from '@/components/mission/StreakBar';
 import { MissionChecklist } from '@/components/mission/MissionChecklist';
 import { ProgressRing } from '@/components/progress/ProgressRing';
 import { ScoreTrend } from '@/components/progress/ScoreTrend';
-import { useUser } from '@/hooks/queries/useUser';
 import { useProgress } from '@/hooks/queries/useProgress';
 import { useTodayMissions } from '@/hooks/queries/useTodayMissions';
 import { useActiveProtocol } from '@/hooks/queries/useActiveProtocol';
 import { useCompleteMission } from '@/hooks/mutations/useCompleteMission';
 import { useUiStore } from '@/stores/ui.store';
 
-function greeting(name: string | null | undefined): string {
-  const hour = new Date().getHours();
-  const part = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
-  return `${part}, ${name ?? 'there'}.`;
+function formatDateStamp(now = new Date()): string {
+  const weekday = now.toLocaleDateString(undefined, { weekday: 'short' });
+  const month = now.toLocaleDateString(undefined, { month: 'short' });
+  const day = now.getDate();
+  return `Today · ${weekday}, ${month} ${day}`;
 }
 
 export default function HomeScreen() {
   const router = useRouter();
   const showToast = useUiStore((s) => s.showToast);
-  const userQ = useUser();
   const progressQ = useProgress();
   const missionsQ = useTodayMissions();
   const protocolQ = useActiveProtocol();
   const complete = useCompleteMission();
 
-  return (
-    <Screen scrollable>
-      <Stack gap="xl">
-        <Text variant="h2" color="platinum">
-          {greeting(userQ.data?.displayName)}
-        </Text>
+  const dateStamp = useMemo(() => formatDateStamp(), []);
 
-        {progressQ.isLoading ? (
-          <Skeleton width="100%" height={88} radius="lg" />
-        ) : progressQ.data ? (
-          <StreakBar streak={progressQ.data.streak} />
-        ) : null}
+  const openMissions = missionsQ.data?.filter((m) => m.status !== 'COMPLETED').length ?? 0;
+  const totalMissions = missionsQ.data?.length ?? 0;
+
+  return (
+    <Screen scrollable contentContainerStyle={{ paddingBottom: 120 }}>
+      <Stack gap="xl">
+        <Stack gap="lg">
+          <Eyebrow>{dateStamp}</Eyebrow>
+          {progressQ.isLoading ? (
+            <Skeleton width="100%" height={120} radius="lg" />
+          ) : progressQ.data ? (
+            <StreakBar streak={progressQ.data.streak} />
+          ) : null}
+        </Stack>
+
+        <Divider />
 
         <Stack gap="md">
-          <Text variant="h3" color="platinum">
-            Today&apos;s missions
-          </Text>
+          <Row justify="between" align="end">
+            <Eyebrow>Today&apos;s missions</Eyebrow>
+            {totalMissions > 0 ? (
+              <Eyebrow color={openMissions === 0 ? 'accent' : 'steel'}>
+                {openMissions === 0 ? 'All clear' : `${openMissions} open`}
+              </Eyebrow>
+            ) : null}
+          </Row>
           {missionsQ.isLoading ? (
             <Stack gap="sm">
-              <Skeleton width="100%" height={88} radius="lg" />
-              <Skeleton width="100%" height={88} radius="lg" />
-              <Skeleton width="100%" height={88} radius="lg" />
+              <Skeleton width="100%" height={96} radius="lg" />
+              <Skeleton width="100%" height={96} radius="lg" />
+              <Skeleton width="100%" height={96} radius="lg" />
             </Stack>
           ) : missionsQ.error ? (
             <ErrorState error={missionsQ.error} onRetry={() => missionsQ.refetch()} />
@@ -79,25 +92,27 @@ export default function HomeScreen() {
         </Stack>
 
         <Stack gap="md">
-          <Text variant="h3" color="platinum">
-            Active protocol
-          </Text>
+          <Eyebrow>Active protocol</Eyebrow>
           {protocolQ.isLoading ? (
             <Skeleton width="100%" height={120} radius="lg" />
           ) : protocolQ.data ? (
-            <Card>
+            <Card tone="raised" padding="lg">
               <Row gap="lg" align="center">
                 <ProgressRing
                   value={(protocolQ.data.currentDay / protocolQ.data.totalDays) * 100}
-                  size={80}
+                  size={84}
+                  thickness={5}
                 />
-                <Stack gap="xs">
+                <Stack gap="sm" flex={1}>
                   <Text variant="h3" color="platinum">
                     {protocolQ.data.type.replace('_', '-')} Glow-Up
                   </Text>
-                  <Text variant="caption" color="steel">
-                    Day {protocolQ.data.currentDay} of {protocolQ.data.totalDays}
-                  </Text>
+                  <Stat
+                    value={`${protocolQ.data.currentDay} / ${protocolQ.data.totalDays}`}
+                    label="Day"
+                    size="md"
+                    color="accent"
+                  />
                 </Stack>
               </Row>
             </Card>
@@ -110,17 +125,13 @@ export default function HomeScreen() {
         </Stack>
 
         <Stack gap="md">
-          <Text variant="h3" color="platinum">
-            Weekly insight
-          </Text>
+          <Eyebrow>Trending this week</Eyebrow>
           {progressQ.isLoading ? (
-            <Skeleton width="100%" height={64} radius="lg" />
+            <Skeleton width="100%" height={72} radius="lg" />
           ) : progressQ.data && progressQ.data.weeklyProgress[0]?.scoreTrends[0] ? (
             <ScoreTrend score={progressQ.data.weeklyProgress[0].scoreTrends[0]} />
           ) : null}
         </Stack>
-
-        {userQ.isLoading ? <LoadingState /> : null}
       </Stack>
     </Screen>
   );

@@ -8,10 +8,17 @@ export type LoadingStateProps = {
 
 export function LoadingState({ message }: LoadingStateProps) {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.base }}>
-      <ActivityIndicator color={colors.electricBlue} size="large" />
+    <View
+      style={{
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: spacing.base,
+      }}
+    >
+      <ActivityIndicator color={colors.accent} size="large" />
       {message ? (
-        <Text variant="body" color="steel">
+        <Text variant="caption" color="steelDim" align="center">
           {message}
         </Text>
       ) : null}

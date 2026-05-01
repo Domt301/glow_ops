@@ -4,6 +4,7 @@ import Animated, {
   useSharedValue,
   withRepeat,
   withTiming,
+  Easing,
 } from 'react-native-reanimated';
 import { colors, radius, type SpacingToken } from '@/theme';
 
@@ -27,10 +28,14 @@ const RADII: Record<SpacingToken, number> = {
 };
 
 export function Skeleton({ width, height, radius: radiusToken = 'sm' }: SkeletonProps) {
-  const opacity = useSharedValue(0.4);
+  const opacity = useSharedValue(0.35);
 
   useEffect(() => {
-    opacity.value = withRepeat(withTiming(0.85, { duration: 800 }), -1, true);
+    opacity.value = withRepeat(
+      withTiming(0.65, { duration: 1200, easing: Easing.inOut(Easing.quad) }),
+      -1,
+      true,
+    );
   }, [opacity]);
 
   const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
@@ -49,4 +54,3 @@ export function Skeleton({ width, height, radius: radiusToken = 'sm' }: Skeleton
     />
   );
 }
-

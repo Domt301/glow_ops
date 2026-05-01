@@ -2,13 +2,13 @@
 
 # dependencies
 node_modules/
-
+.env
 # Expo
 .expo/
 dist/
 web-build/
 expo-env.d.ts
-
+.claude/
 # Native
 .kotlin/
 *.orig.*
@@ -39,3 +39,4 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+.env

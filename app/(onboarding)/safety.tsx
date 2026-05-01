@@ -1,11 +1,54 @@
+import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen } from '@/components/primitives/Screen';
 import { Stack } from '@/components/primitives/Stack';
+import { Row } from '@/components/primitives/Row';
 import { Text } from '@/components/primitives/Text';
+import { Eyebrow } from '@/components/primitives/Eyebrow';
 import { Button } from '@/components/primitives/Button';
 import { useUpdateUser } from '@/hooks/mutations/useUpdateUser';
 import { useUiStore } from '@/stores/ui.store';
 import { analyticsService } from '@/services';
+import { colors, spacing } from '@/theme';
+
+const RULES: { title: string; body: string }[] = [
+  {
+    title: 'Guidance, not medicine',
+    body: 'Glowops gives you guidance, not medical advice. For health concerns, talk to a qualified professional.',
+  },
+  {
+    title: 'No unsafe shortcuts',
+    body: 'We never recommend surgery, steroids, SARMs, or extreme dieting. If you’re struggling with body image or mental health, please reach out for support.',
+  },
+  {
+    title: 'Your photos stay private',
+    body: 'We don’t post, sell, or train models on your images without explicit consent.',
+  },
+];
+
+function Rule({ title, body }: { title: string; body: string }) {
+  return (
+    <Row gap="md" align="start">
+      <View
+        style={{
+          width: 6,
+          height: 6,
+          borderRadius: 3,
+          backgroundColor: colors.accent,
+          marginTop: spacing.sm + 2,
+        }}
+      />
+      <Stack gap="xs" flex={1}>
+        <Text variant="bodyMedium" color="platinum">
+          {title}
+        </Text>
+        <Text variant="body" color="steel">
+          {body}
+        </Text>
+      </Stack>
+    </Row>
+  );
+}
 
 export default function SafetyScreen() {
   const router = useRouter();
@@ -27,29 +70,26 @@ export default function SafetyScreen() {
 
   return (
     <Screen scrollable>
-      <Stack gap="lg" justify="between" flex={1}>
-        <Stack gap="base">
-          <Text variant="h1" color="platinum">
-            A few ground rules.
-          </Text>
-          <Text variant="body" color="platinum">
-            GlowOps gives you guidance, not medical advice.
-          </Text>
-          <Text variant="body" color="steel">
-            We do not recommend surgery, steroids, SARMs, extreme dieting, or any unsafe
-            modification. If you&apos;re struggling with body image or mental health, please speak
-            with a qualified professional.
-          </Text>
-          <Text variant="body" color="steel">
-            Your photos stay private. We do not post, sell, or train models on your images without
-            explicit consent.
-          </Text>
+      <Stack gap="xl" justify="between" flex={1}>
+        <Stack gap="lg">
+          <Stack gap="sm">
+            <Eyebrow>Step 02 / 04</Eyebrow>
+            <Text variant="display" color="platinum">
+              Ground rules.
+            </Text>
+          </Stack>
+          <Stack gap="lg">
+            {RULES.map((r) => (
+              <Rule key={r.title} title={r.title} body={r.body} />
+            ))}
+          </Stack>
         </Stack>
         <Button
           label="I understand"
           onPress={handleAccept}
           loading={updateUser.isPending}
           fullWidth
+          size="lg"
         />
       </Stack>
     </Screen>

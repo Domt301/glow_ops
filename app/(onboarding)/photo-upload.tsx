@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
 import type { Photo, PhotoKind } from '@/types';
@@ -7,6 +6,8 @@ import { Screen } from '@/components/primitives/Screen';
 import { Stack } from '@/components/primitives/Stack';
 import { Row } from '@/components/primitives/Row';
 import { Text } from '@/components/primitives/Text';
+import { Eyebrow } from '@/components/primitives/Eyebrow';
+import { Stat } from '@/components/primitives/Stat';
 import { Button } from '@/components/primitives/Button';
 import { PhotoUploadSlot } from '@/components/photo/PhotoUploadSlot';
 import { useUploadPhoto } from '@/hooks/mutations/useUploadPhoto';
@@ -14,7 +15,6 @@ import { useStartScan } from '@/hooks/mutations/useStartScan';
 import { useOnboardingStore } from '@/stores/onboarding.store';
 import { useUiStore } from '@/stores/ui.store';
 import { analyticsService } from '@/services';
-import { spacing } from '@/theme';
 
 const SLOTS: PhotoKind[] = ['selfie_front', 'selfie_side', 'full_body', 'beard_hair'];
 const REQUIRED = 3;
@@ -84,60 +84,74 @@ export default function PhotoUploadScreen() {
     );
   };
 
-  const canContinue = uploadedPhotoIds.length >= REQUIRED;
+  const captured = uploadedPhotoIds.length;
+  const canContinue = captured >= REQUIRED;
+  const counterColor = canContinue ? 'accent' : 'platinum';
 
   return (
     <Screen scrollable>
-      <Stack gap="lg">
-        <Stack gap="xs">
-          <Text variant="h1" color="platinum">
-            Upload your photos.
-          </Text>
-          <Text variant="body" color="steel">
-            These stay private.
-          </Text>
+      <Stack gap="xl" justify="between" flex={1}>
+        <Stack gap="lg">
+          <Stack gap="sm">
+            <Eyebrow>Step 03 / 04</Eyebrow>
+            <Text variant="display" color="platinum">
+              Upload photos.
+            </Text>
+            <Text variant="body" color="steel">
+              Three minimum. They stay private.
+            </Text>
+          </Stack>
+
+          <Row justify="between" align="center">
+            <Stat
+              value={`${captured}/${REQUIRED}`}
+              label="Captured"
+              size="lg"
+              color={counterColor}
+            />
+            <Eyebrow color="steelDim">Tap a slot to upload</Eyebrow>
+          </Row>
+
+          <Stack gap="sm">
+            <Row gap="sm">
+              <PhotoUploadSlot
+                kind={SLOTS[0]}
+                photo={photos[SLOTS[0]]}
+                onPick={() => handlePick(SLOTS[0])}
+                uploading={upload.isPending && activeKind === SLOTS[0]}
+              />
+              <PhotoUploadSlot
+                kind={SLOTS[1]}
+                photo={photos[SLOTS[1]]}
+                onPick={() => handlePick(SLOTS[1])}
+                uploading={upload.isPending && activeKind === SLOTS[1]}
+              />
+            </Row>
+            <Row gap="sm">
+              <PhotoUploadSlot
+                kind={SLOTS[2]}
+                photo={photos[SLOTS[2]]}
+                onPick={() => handlePick(SLOTS[2])}
+                uploading={upload.isPending && activeKind === SLOTS[2]}
+              />
+              <PhotoUploadSlot
+                kind={SLOTS[3]}
+                photo={photos[SLOTS[3]]}
+                onPick={() => handlePick(SLOTS[3])}
+                uploading={upload.isPending && activeKind === SLOTS[3]}
+              />
+            </Row>
+          </Stack>
         </Stack>
 
-        <Stack gap="sm">
-          <Row gap="sm">
-            <PhotoUploadSlot
-              kind={SLOTS[0]}
-              photo={photos[SLOTS[0]]}
-              onPick={() => handlePick(SLOTS[0])}
-              uploading={upload.isPending && activeKind === SLOTS[0]}
-            />
-            <PhotoUploadSlot
-              kind={SLOTS[1]}
-              photo={photos[SLOTS[1]]}
-              onPick={() => handlePick(SLOTS[1])}
-              uploading={upload.isPending && activeKind === SLOTS[1]}
-            />
-          </Row>
-          <Row gap="sm">
-            <PhotoUploadSlot
-              kind={SLOTS[2]}
-              photo={photos[SLOTS[2]]}
-              onPick={() => handlePick(SLOTS[2])}
-              uploading={upload.isPending && activeKind === SLOTS[2]}
-            />
-            <PhotoUploadSlot
-              kind={SLOTS[3]}
-              photo={photos[SLOTS[3]]}
-              onPick={() => handlePick(SLOTS[3])}
-              uploading={upload.isPending && activeKind === SLOTS[3]}
-            />
-          </Row>
-        </Stack>
-
-        <View style={{ marginTop: spacing.base }}>
-          <Button
-            label="Continue"
-            onPress={handleContinue}
-            disabled={!canContinue}
-            loading={startScan.isPending}
-            fullWidth
-          />
-        </View>
+        <Button
+          label="Continue"
+          onPress={handleContinue}
+          disabled={!canContinue}
+          loading={startScan.isPending}
+          fullWidth
+          size="lg"
+        />
       </Stack>
     </Screen>
   );

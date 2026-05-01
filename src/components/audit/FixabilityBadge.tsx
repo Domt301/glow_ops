@@ -6,17 +6,17 @@ export type FixabilityBadgeProps = {
 };
 
 const LABELS: Record<FixabilityLevel, string> = {
-  low: 'Low Fixability',
-  medium: 'Medium Fixability',
-  high: 'Highly Fixable',
-  very_high: 'Very High Fixability',
+  low: 'Low fixability',
+  medium: 'Medium fixability',
+  high: 'Highly fixable',
+  very_high: 'Very high fixability',
 };
 
 const VARIANTS: Record<FixabilityLevel, BadgeVariant> = {
   low: 'neutral',
   medium: 'info',
   high: 'success',
-  very_high: 'success',
+  very_high: 'accent',
 };
 
 export function FixabilityBadge({ level }: FixabilityBadgeProps) {

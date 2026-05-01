@@ -2,8 +2,10 @@ import { Minus, TrendingDown, TrendingUp } from 'lucide-react-native';
 import type { CategoryScore } from '@/types';
 import { colors } from '@/theme';
 import { Card } from '@/components/primitives/Card';
+import { Stack } from '@/components/primitives/Stack';
 import { Row } from '@/components/primitives/Row';
 import { Text } from '@/components/primitives/Text';
+import { Eyebrow } from '@/components/primitives/Eyebrow';
 
 export type ScoreTrendProps = {
   score: CategoryScore;
@@ -35,17 +37,17 @@ export function ScoreTrend({ score }: ScoreTrendProps) {
     score.trend === 'up' ? 'signalGreen' : score.trend === 'down' ? 'crimson' : 'steel';
 
   return (
-    <Card padding="md">
+    <Card padding="base">
       <Row gap="md" justify="between" align="center">
-        <Text variant="bodyMedium" color="platinum">
-          {LABELS[score.category] ?? score.category}
-        </Text>
-        <Row gap="md" align="center">
+        <Stack gap="xs">
+          <Eyebrow>{LABELS[score.category] ?? score.category}</Eyebrow>
           <Text variant="stat" color="platinum">
             {score.score}
           </Text>
-          <Icon size={18} color={tint} />
-          <Text variant="caption" color={deltaColor}>
+        </Stack>
+        <Row gap="sm" align="center">
+          <Icon size={16} color={tint} strokeWidth={2.25} />
+          <Text variant="bodyMedium" color={deltaColor}>
             {sign}
             {score.changeFromLastWeek}
           </Text>

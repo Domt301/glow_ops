@@ -18,19 +18,21 @@ export function EmptyState({ icon: Icon, title, message, cta }: EmptyStateProps)
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        padding: spacing.base,
-        gap: spacing.base,
+        padding: spacing.xl,
+        gap: spacing.lg,
       }}
     >
-      {Icon ? <Icon size={32} color={colors.steel} /> : null}
-      <Text variant="h3" color="platinum" align="center">
-        {title}
-      </Text>
-      {message ? (
-        <Text variant="body" color="steel" align="center">
-          {message}
+      {Icon ? <Icon size={44} color={colors.steelDim} strokeWidth={1.5} /> : null}
+      <View style={{ gap: spacing.sm, alignItems: 'center', maxWidth: 320 }}>
+        <Text variant="h2" color="platinum" align="center">
+          {title}
         </Text>
-      ) : null}
+        {message ? (
+          <Text variant="body" color="steel" align="center">
+            {message}
+          </Text>
+        ) : null}
+      </View>
       {cta ? <Button label={cta.label} onPress={cta.onPress} /> : null}
     </View>
   );
